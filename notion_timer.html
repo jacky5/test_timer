@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion Embedded Timer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff;
+        }
+        .timer-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        .timer-display {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333333;
+        }
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .timer-button {
+            background-color: #2ecc71;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .timer-button:hover {
+            background-color: #27ae60;
+        }
+        .timer-button.reset {
+            background-color: #e74c3c;
+        }
+        .timer-button.reset:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="timer-card">
+        <div id="timer" class="timer-display">00:00:00</div>
+        <div class="timer-controls">
+            <button id="startPause" class="timer-button">Start</button>
+            <button id="reset" class="timer-button reset">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let time = 0;
+        let isRunning = false;
+        let interval;
+
+        const timerDisplay = document.getElementById('timer');
+        const startPauseButton = document.getElementById('startPause');
+        const resetButton = document.getElementById('reset');
+
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainingSeconds = seconds % 60;
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateDisplay() {
+            timerDisplay.textContent = formatTime(time);
+        }
+
+        function startPauseTimer() {
+            if (isRunning) {
+                clearInterval(interval);
+                startPauseButton.textContent = 'Start';
+                startPauseButton.style.backgroundColor = '#2ecc71';
+            } else {
+                interval = setInterval(() => {
+                    time++;
+                    updateDisplay();
+                }, 1000);
+                startPauseButton.textContent = 'Pause';
+                startPauseButton.style.backgroundColor = '#e74c3c';
+            }
+            isRunning = !isRunning;
+        }
+
+        function resetTimer() {
+            clearInterval(interval);
+            time = 0;
+            isRunning = false;
+            updateDisplay();
+            startPauseButton.textContent = 'Start';
+            startPauseButton.style.backgroundColor = '#2ecc71';
+        }
+
+        startPauseButton.addEventListener('click', startPauseTimer);
+        resetButton.addEventListener('click', resetTimer);
+    </script>
+</body>
+</html>
